@@ -1,14 +1,13 @@
 from fastapi import FastAPI
 from app.database import engine, Base
-from app.routes import vehicles
+from app.routes import vehicles, drivers  # 1. Must import both routers
 
-# Create database tables
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="LERO Fleet API")
 
-# Connect our modular routes
-app.include_router(vehicles.router)
+app.include_router(vehicles.router)  # 2. Must include vehicles
+app.include_router(drivers.router)   # 3. Must include drivers
 
 @app.get("/")
 def home():
@@ -17,4 +16,5 @@ def home():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
+
 
