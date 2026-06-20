@@ -79,3 +79,40 @@ def get_vehicle_efficiency(vehicle_id: int, db: Session = Depends(get_db)):
         "average_liters_per_100km": round(avg_efficiency, 2)
     }
 
+# Keep your existing code at the top, append this to the very bottom:
+
+# 3. PUT Route: Update an existing vehicle's details
+@router.put("/{vehicle_id}", response_model=VehicleResponse)
+def update_vehicle(vehicle_id: int, updated_vehicle: VehicleCreate, db: Session = Depends(get_db)):
+    db_vehicle = db.query(DBVehicle).filter(DBVehicle.id == vehicle_id).first()
+    if not db_vehicle:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
+        
+    # Check if they are trying to change to a license plate that someone else owns
+    plate_check = db.query(DBVehicle).filter(
+        DBVehicle.license_plate == updated_vehicle.license_plate, 
+        DBVehicle.id != vehicle_id
+    ).first()
+    if plate_check:
+        raise HTTPException(status_code=400, detail="License plate already in use by another vehicle")
+
+    db_vehicle.make = updated_vehicle.make
+    db_vehicle.model = updated_vehicle.model
+    db_vehicle.year = updated_vehicle.year
+    db_vehicle.license_plate = updated_vehicle.license_plate
+    
+    db.commit()
+    db.refresh(db_vehicle)
+    return db_vehicle
+
+# 4. DELETE Route: Remove a vehicle from the fleet registry
+@router.delete("/{vehicle_id}")
+def delete_vehicle(vehicle_id: int, db: Session = Depends(get_db)):
+    db_vehicle = db.query(DBVehicle).filter(DBVehicle.id == vehicle_id).first()
+    if not db_vehicle:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
+        
+    db.delete(db_vehicle)
+    db.commit()
+    return {"message": f"Vehicle with ID {vehicle_id} successfully deleted"}
+
