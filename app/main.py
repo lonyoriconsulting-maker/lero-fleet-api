@@ -4,15 +4,26 @@ from app.routes import vehicles, drivers, trips
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="LERO Role-Based Fleet API")
+# Set up metadata details for the automated interactive docs layout
+app = FastAPI(
+    title="LERO Fleet Management API",
+    description="Secured, production-grade REST API built with FastAPI for commercial fleet operations.",
+    version="1.0.0"
+)
 
-app.include_router(vehicles.router)
-app.include_router(drivers.router)
-app.include_router(trips.router)
+# Mount all modular domain routers under the absolute enterprise v1 api path
+app.include_router(vehicles.router, prefix="/api/v1")
+app.include_router(drivers.router, prefix="/api/v1")
+app.include_router(trips.router, prefix="/api/v1")
 
 @app.get("/")
 def home():
-    return {"message": "LERO Fleet API running securely with Role-Based access control"}
+    return {
+        "status": "online",
+        "project": "LERO Fleet Management System API",
+        "api_version": "v1",
+        "documentation": "/docs"
+    }
 
 if __name__ == "__main__":
     import uvicorn
