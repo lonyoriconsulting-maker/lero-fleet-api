@@ -26,9 +26,18 @@ def log_trip(trip: TripCreate, db: Session = Depends(get_db), role: str = Depend
     return new_trip
 
 # 2. GET Route: Fetch all trips (ALL ROLES)
+from typing import Optional
+
 @router.get("", response_model=List[TripResponse])
-def get_trips(db: Session = Depends(get_db), role: str = Depends(get_current_user_role)):
-    return db.query(DBTrip).all()
+def get_trips(
+    min_distance: Optional[float] = None,
+    db: Session = Depends(get_db),
+    role: str =  Depends(get_current_user_role)
+):
+    query = db.query(DBTrip)
+    if min_distance is not None:
+        query = query.filter(DBTrip.distance_km >= min_distance)
+    return query.all()
 
 # 3. EXPORT Route: Generate CSV Spreadsheet (MANAGER ONLY)
 @router.get("/export/csv")

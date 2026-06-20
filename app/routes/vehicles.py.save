@@ -26,20 +26,15 @@ def add_vehicle(vehicle: VehicleCreate, db: Session = Depends(get_db), role: str
     return new_vehicle
 
 # 2. GET Route: Fetch all vehicles (MANAGERS & DRIVERS CAN ACCESS)
-from typing import Optional
-
+from typing import Optional # Ensure Optional is imported at the top if it  isn't
 @router.get("", response_model=List[VehicleResponse])
-def get_vehicles(
-    make: Optional[str] = None,
-    db: Session = Depends(get_db),
-    role: str = Depends(get_current_user_role)
-):
-    query = db.query(DBVehicle)
-    if make:
-       query = query.filter(DBVehicle.make.ilike(f"%{make}%"))
-    return query.all()
+def get_vehicles(db: Session = Depends(get_db), role: str = Depends(get_current_user_role)):
+    return db.query(DBVehicle).all()
 
-# 3. PUT Route: Update vehicle (MANAGER ONLY)
+
+
+
+: Update vehicle (MANAGER ONLY)
 @router.put("/{vehicle_id}", response_model=VehicleResponse)
 def update_vehicle(vehicle_id: int, updated_vehicle: VehicleCreate, db: Session = Depends(get_db), role: str = Depends(get_current_user_role)):
     if role != "manager":
