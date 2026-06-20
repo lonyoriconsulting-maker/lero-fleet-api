@@ -28,4 +28,18 @@ class DriverResponse(DriverCreate):
 
     class Config:
         from_attributes = True
+# Keep your existing code at the top, append this to the very bottom:
+class TripCreate(BaseModel):
+    vehicle_id: int
+    driver_id: int
+    start_location: str
+    end_location: str
+    distance_km: float
+    fuel_used_liters: float
+
+class TripResponse(TripCreate):
+    id: int
+
+    class Config:
+        from_attributes = True
 

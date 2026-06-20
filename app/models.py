@@ -22,3 +22,17 @@ class DBDriver(Base):
     license_number = Column(String, unique=True, index=True)
     phone_number = Column(String)
 
+# Keep your existing code at the top, append this to the very bottom:
+from sqlalchemy import Column, Integer, String, Float, ForeignKey
+
+class DBTrip(Base):
+    __tablename__ = "trips"
+
+    id = Column(Integer, primary_key=True, index=True)
+    vehicle_id = Column(Integer, ForeignKey("vehicles.id"), nullable=False)
+    driver_id = Column(Integer, ForeignKey("drivers.id"), nullable=False)
+    start_location = Column(String)
+    end_location = Column(String)
+    distance_km = Column(Float)
+    fuel_used_liters = Column(Float)
+
