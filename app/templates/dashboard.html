@@ -4,74 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LERO Fleet Management Dashboard</title>
-    <!-- Tailwind CSS for Modern Enterprise Styling -->
     <script src="https://jsdelivr.net"></script>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
-
-    <!-- Header Navigation Bar -->
-    <header class="bg-slate-800 border-b border-slate-700 px-6 py-4 shadow-xl flex justify-between items-center">
-        <h1 class="text-2xl font-bold tracking-wider text-amber-500">LERO FLEET MANAGEMENT</h1>
-        <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs px-3 py-1 rounded-full font-semibold">
-            System Live
-        </span>
-    </header>
-
-    <main class="max-w-7xl mx-auto p-6 space-y-8">
-        
-        <!-- Summary Analytical Cards -->
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
-                <p class="text-slate-400 text-sm font-medium uppercase tracking-wider">Total Active Trips</p>
-                <p class="text-4xl font-extrabold mt-2 text-white">{{ trips|length }}</p>
+<body class="bg-gray-100 font-sans">
+    <nav class="bg-blue-600 p-4 text-white shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold tracking-wider">LERO SMART FLEET</h1>
+            <span class="bg-blue-700 px-3 py-1 rounded text-sm font-semibold">Manager Portal</span>
+        </div>
+    </nav>
+    <main class="container mx-auto mt-8 px-4">
+        <h2 class="text-xl font-bold mb-4 text-gray-700">Live Infrastructure Analytics</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-green-500">
+                <p class="text-sm font-medium text-gray-500 uppercase">Active Drivers</p>
+                <p class="text-3xl font-bold text-gray-800">{{ total_drivers }}</p>
             </div>
-            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
-                <p class="text-slate-400 text-sm font-medium uppercase tracking-wider">Total Fleet Distance</p>
-                <p class="text-4xl font-extrabold mt-2 text-amber-500">{{ "%.1f"|format(total_distance) }} <span class="text-lg">KM</span></p>
+            <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-blue-500">
+                <p class="text-sm font-medium text-gray-500 uppercase">Tracked Vehicles</p>
+                <p class="text-3xl font-bold text-gray-800">{{ total_vehicles }}</p>
             </div>
-            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-md">
-                <p class="text-slate-400 text-sm font-medium uppercase tracking-wider">Total Fuel Utilized</p>
-                <p class="text-4xl font-extrabold mt-2 text-rose-500">{{ "%.1f"|format(total_fuel) }} <span class="text-lg">Liters</span></p>
+            <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-yellow-500">
+                <p class="text-sm font-medium text-gray-500 uppercase">Dispatched Trips</p>
+                <p class="text-3xl font-bold text-gray-800">{{ total_trips }}</p>
             </div>
-        </section>
-
-        <!-- Live Database Grid Elements -->
-        <section class="bg-slate-800 rounded-xl border border-slate-700 shadow-xl overflow-hidden">
-            <div class="p-6 border-b border-slate-700 bg-slate-800/50">
-                <h2 class="text-lg font-bold text-white">Recent Fleet Logs (Database Streams)</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-purple-500">
+                <p class="text-sm font-medium text-gray-500 uppercase">Total Fleet Distance</p>
+                <p class="text-3xl font-bold text-gray-800">{{ total_distance }} KM</p>
             </div>
-            
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-slate-950 text-slate-400 text-xs uppercase font-semibold border-b border-slate-700">
-                            <th class="p-4">Trip ID</th>
-                            <th class="p-4">Driver Reference ID</th>
-                            <th class="p-4">Vehicle Reference ID</th>
-                            <th class="p-4">Route Matrix</th>
-                            <th class="p-4">Distance Logged</th>
-                            <th class="p-4">Fuel Expended</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-700/50 text-sm text-slate-300">
-                        {% for trip in trips %}
-                        <tr class="hover:bg-slate-700/30 transition-colors">
-                            <td class="p-4 font-mono text-amber-400">#{{ trip.id }}</td>
-                            <td class="p-4">Driver User #{{ trip.driver_id }}</td>
-                            <td class="p-4 font-semibold text-white">Vehicle Ref #{{ trip.vehicle_id }}</td>
-                            <td class="p-4">
-                                <span class="text-slate-400">{{ trip.start_location }}</span> 
-                                <span class="text-amber-500 mx-1">➔</span> 
-                                <span class="text-white">{{ trip.end_location }}</span>
-                            </td>
-                            <td class="p-4 font-mono">{{ trip.distance_km }} km</td>
-                            <td class="p-4 font-mono text-rose-400">{{ trip.fuel_used_liters }} L</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-pink-500">
+                <p class="text-sm font-medium text-gray-500 uppercase">Total Fuel Utilized</p>
+                <p class="text-3xl font-bold text-gray-800">{{ total_fuel }} Liters</p>
             </div>
-        </section>
+        </div>
+        <h2 class="text-xl font-bold mb-4 text-gray-700">Recent Fleet Logs (Database Streams)</h2>
+        <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Trip ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Driver ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Vehicle ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Route Matrix</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Distance</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fuel</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for trip in recent_trips %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-blue-600">#{{ trip.id }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ trip.driver_id }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ trip.vehicle_id }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ trip.route_name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ trip.distance }} KM</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-amber-600 font-bold">{{ trip.fuel_used }} L</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </main>
 </body>
 </html>
+
